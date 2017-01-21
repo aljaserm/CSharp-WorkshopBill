@@ -1,0 +1,167 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace Program6_5
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+            
+
+            private void btnCalculate_Click(object sender, EventArgs e)
+            {
+                double oil = 0, lube = 0, radiator = 0, transmission = 0, inspection = 0, mulffer = 0, tire = 0,
+                    parts=0, labor=0, tax=0, total=0;
+
+                if (!double.TryParse(txtParts.Text, out parts))
+                {
+                    parts = 0.0;
+                }
+                if (!double.TryParse(txtLabor.Text, out labor))
+                {
+                    labor = 0.0;
+                }
+                if (txtParts.Text == "")
+                {
+                    lblParts.Text = "$0";
+                }
+                else
+                {
+                    lblParts.Text = "$" + txtParts.Text.ToString();
+                }
+                //lblService.Text = (OilLubeCharges(oil, lube) +
+                //FlushCharges(radiator, transmission) +
+                //MiscCharges(inspection, tire, mulffer) + (labor * 20)).ToString();
+             
+
+                if (chkOilChange.Checked == true)
+                {
+                    oil = 26;
+                }
+
+                if (chkLubeJob.Checked == true)
+                {
+                    lube = 18;
+                }
+                if (chkRadiatorFlush.Checked == true)
+                {
+                    radiator = 30;
+                }
+                if (chkTransmissionFlush.Checked == true)
+                {
+                    transmission = 80;
+                }
+
+                if (chkInspection.Checked == true)
+                {
+                    inspection = 15;
+                }
+
+                if (chkReplaceMuffler.Checked == true)
+                {
+                    mulffer = 100;
+                }
+                if (chkTireRotation.Checked==true)
+                {
+                    
+                    tire = 20;
+                }
+               
+                double dbloilliub = OilLubeCharges(oil, lube);
+                double dblflush = FlushCharges(radiator, transmission);
+                double dblmisc = MiscCharges(inspection, tire, mulffer);
+                double dblpart= OtherCharges(parts,labor);
+                double dblother= OtherCharges(parts, labor) - labor;
+                double dbltax = TaxCharges(parts, labor, dbloilliub, dblflush, dblmisc, dblother);
+                double dblservice=dblflush+dbloilliub+dblmisc+(labor);
+                double dbltotal = TotalCharges(dbloilliub, dblflush, dblmisc, dbltax, dblpart);
+                lblService.Text=dblservice.ToString();
+                lblParts.Text=dblother.ToString();
+                lblTax.Text=dbltax.ToString();
+                lblTotal.Text=dbltotal.ToString();
+
+
+            }
+
+        private double OilLubeCharges(double oil, double lube)
+        {
+
+            return oil + lube;
+
+         }
+
+        private double FlushCharges(double radiator, double transmission)
+        {
+            return radiator + transmission;
+        }
+
+        private double MiscCharges(double inspection,double tire, double mulffer)
+        {
+            return inspection + tire + mulffer;
+        }
+
+        private double OtherCharges(double parts,double labor)
+        {
+            return parts+labor;
+          
+        }
+
+
+        private double TaxCharges(double parts, double labor, double dbloilliub, double dblflush, double dblmisc, double dblother)
+        {
+          
+                return (0.06 * parts);
+            
+            
+        }
+
+        private double TotalCharges(double dblflush, double dblmisc, double dbloilliub, double dbltax, double dblpart)
+        {
+            return dbloilliub + dblflush + dblmisc + dbltax + dblpart;
+        }
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+           
+           //Clear CheckBoxes
+            chkOilChange.Checked = false;
+            chkLubeJob.Checked = false;
+            chkRadiatorFlush.Checked = false;
+            chkTransmissionFlush.Checked = false;
+            chkInspection.Checked = false;
+            chkReplaceMuffler.Checked = false;
+            chkTireRotation.Checked = false;
+
+            //Clear TextBoxes
+            txtParts.Text = string.Empty;
+            txtLabor.Text = string.Empty;
+
+            //Clear Labels
+            lblService.Text = string.Empty;
+            lblParts.Text = string.Empty;
+            lblTax.Text = string.Empty;
+            lblTotal.Text = string.Empty;
+
+        }
+        
+      
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            // Close the form.
+            if (MessageBox.Show("Do you want to Exit?", "My Application",
+               MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                // close the Application.
+                this.Close();
+            }
+        }
+    }
+}
